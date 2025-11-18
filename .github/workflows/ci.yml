@@ -1,3 +1,5 @@
+# .github/workflows/ci.yml
+
 name: Deno CI/CD
 
 on:
@@ -16,13 +18,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Deno
-        # Usa a action oficial para configurar o Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x # Define para usar a versão mais recente do Deno
+          deno-version: v1.x
 
       - name: Cache Deno Dependencies
-        # Cacheia os módulos remotos (esm.sh) para agilizar execuções futuras
         uses: actions/cache@v4
         with:
           path: $HOME/.deno
@@ -31,14 +31,11 @@ jobs:
             ${{ runner.os }}-deno-
 
       - name: Run Deno Formatter Check
-        # Garante que todo o código está formatado
         run: deno fmt --check
 
       - name: Run Deno Linter
-        # Roda o linter para verificar a qualidade do código (incluindo o no-unused-vars)
         run: deno lint
 
       - name: Run Deno Tests
-        # Executa todos os arquivos *.test.jsx (ou *.test.js)
-        # O flag --allow-net é necessário para buscar módulos remotos (esm.sh) durante o teste.
+        # O flag --allow-net é crucial para buscar módulos remotos (esm.sh) usados no teste
         run: deno test --allow-net --allow-read
